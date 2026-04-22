@@ -48,3 +48,27 @@ INSERT INTO relationship_rules (rule_id, from_role_name, to_role_name, relations
 VALUES (relationship_rules_seq.NEXTVAL, 'ASSET_OWNER',     'FUND_ADMINISTRATOR', 'ADMINISTRATED_BY');
 
 COMMIT;
+
+
+
+-- ============================================================
+-- 3. AUDIT TABLE
+-- ============================================================
+CREATE TABLE audit_log
+(
+    audit_id        NUMBER          NOT NULL,
+    table_name      VARCHAR2(100)   NOT NULL,
+    record_id       VARCHAR2(255)   NOT NULL,
+    operation       VARCHAR2(10)    NOT NULL,
+    changed_by      VARCHAR2(255)   NOT NULL,
+    changed_at_utc  TIMESTAMP       NOT NULL,
+    old_values      CLOB,
+    new_values      CLOB,
+    session_info    VARCHAR2(1000),
+    CONSTRAINT audit_log_pk
+        PRIMARY KEY (audit_id),
+    CONSTRAINT audit_log_op_ck
+        CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE'))
+);
+
+CREATE SEQUENCE audit_log_seq START WITH 1 INCREMENT BY 1;
